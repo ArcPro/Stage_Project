@@ -7,18 +7,29 @@
       <label for="inputPassword" class="sr-only">Mot de passe</label>
       <input type="password" id="inputPassword" class="form-control" placeholder="Mot de passe" name="password" required="">
       <div class="checkbox mb-3"> 
-        <label>
-          <input type="checkbox" value="remember-me"> Se souvenir de moi
-        </label>
+
+      <?php 
+        require_once 'controller/AuthController.php';
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+          $email = $_POST['email'];
+          $password = $_POST['password'];
+          
+          $authController = new AuthController();
+
+          if ($authController->login($email, $password)) {
+            // L'utilisateur est connecté avec succès, vous pouvez rediriger vers une page d'accueil ou une autre page sécurisée.
+            header('Location: view/templates/dashboard.php');
+            exit();
+          } else {
+            // Identifiants incorrects, affichez un message d'erreur à l'utilisateur.
+            echo '<label class="form-check-label" for="invalidCheck3" style="color:#dc3545;">Informations de connexion incorrectes</label>';
+          }
+        }
+      ?>
+
       </div>
-      <button class="btn btn-lg btn-success btn-block" type="submit" name="submit">Se connecter</button>
+      <button class="btn btn-lg btn-success btn-block" type="submit">Se connecter</button>
       <p class="mt-5 mb-3 text-muted">© 2023-2024</p>
     </form>
 </body>
-
-<?php 
-
-if (isset($_POST["submit"])) 
-{
-  echo $_POST["email"].$_POST["password"];
-}
