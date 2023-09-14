@@ -25,6 +25,15 @@ class AuthController
         return false; 
     }
 
+    public function register($lastname, $firstname, $email, $password) {
+        $user = $this->userModel->verifyAccount($email, $password);
+        if (!$user) {
+            return $this->userModel->createAccount($lastname, $firstname, $email, $password);;
+        }
+        return false;
+        
+    }
+
     public function logout() {
         session_unset();
         session_destroy();

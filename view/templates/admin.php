@@ -12,12 +12,6 @@ if (isset($_POST["logout"])) {
     header('Location: ../../index.php');
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  if (strlen($_POST["email"]) != 0 && strlen($_POST["password"] != 0)) {
-    echo "bon !!";
-  }
-
-}
 ?>
 <head>
   <link href="../../assets/css/dashboard.css" rel="stylesheet">
@@ -235,7 +229,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Accueil</h1>
       </div>
-            
+            <?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  if (strlen($_POST["email"]) != 0 && strlen($_POST["password"] != 0) && strlen($_POST["name"] != 0) && strlen($_POST["firstname"] != 0)) {
+    $authController = new AuthController();
+    $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+    if ($authController->register($_POST["name"], $_POST["firstname"], $_POST["email"], $password)) {
+      echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+      Le compte de <a href="#" class="alert-link">'.$_POST["firstname"].' '.$_POST["name"].'</a> a été créé avec succès !<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>';
+    } else {
+      echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+      Le compte de <a href="#" class="alert-link">'.$_POST["firstname"].' '.$_POST["name"].'</a> n\'a pas été créé ou existe déjà !<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>';
+    }
+  }
+}
+            ?>
       <div class="container col-xl-10 col-xxl-8 px-4 py-5">
         <div class="row align-items-center g-lg-5 py-5">
           <div class="col-lg-7 text-center text-lg-start">
@@ -245,11 +255,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div class="col-md-10 mx-auto col-lg-5">
             <form class="p-4 p-md-5 border rounded-3 bg-body-tertiary" method="post">
               <div class="form-floating mb-3">
-                <input type="email" id="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                <input type="name" id="name" name="name" class="form-control" id="floatingInput" placeholder="Demede">
+                <label for="floatingInput">Nom</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="firstname" id="firstname" name="firstname" class="form-control" id="floatingInput" placeholder="Michel">
+                <label for="floatingInput">Prénom</label>
+              </div>  
+              <div class="form-floating mb-3">
+                <input type="email" id="email" name="email" class="form-control" id="floatingInput" placeholder="demede@btssio.com">
                 <label for="floatingInput">Adresse Email</label>
               </div>
               <div class="form-floating mb-3">
-                <input type="password" id="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
+                <input type="password" id="password" name="password" class="form-control" id="floatingPassword" placeholder="Mot de passe">
                 <label for="floatingPassword">Mot de passe (temporaire)</label>
               </div>
               
@@ -267,6 +285,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                      <b>Nom : </b> <a id="lastnameLabel">SAISISSEZ UN NOM DE FAMILLE</a>
+                      <hr class="my-3">
+                      <b>Prénom : </b> <a id="firstnameLabel">SAISISSEZ UN PRENOM</a>
+                      <hr class="my-3">
                       <b>Adresse Email : </b> <a id="emailLabel">SAISISSEZ UNE ADRESSE EMAIL</a>
                       <hr class="my-3">
                       <b>Mot de passe : </b> <a id="passwordLabel">SAISISSEZ UN MOT DE PASSE</a>
@@ -294,9 +316,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <script>
   function createAccount() {
+    let lastname = document.getElementById("name").value;
+    let firstname = document.getElementById("firstname").value;
     let email = document.getElementById("email").value;
     let password = document.getElementById("password").value;
     console.log(email + password)
+    if (email.length != 0) {
+      let emailLabel = document.getElementById("lastnameLabel").innerHTML = lastname;
+    }
+    if (password.length != 0) {
+      let passwordLabel = document.getElementById("firstnameLabel").innerHTML = firstname;
+    }
     if (email.length != 0) {
       let emailLabel = document.getElementById("emailLabel").innerHTML = email;
     }

@@ -18,5 +18,19 @@ class UserModel {
         }
         return null; 
     }
+
+    public function verifyAccount($email) {
+        $query = "SELECT * FROM professeur WHERE Adresse_Email = :email";
+        $params = [':email' => $email];
+
+        return $this->db->executePreparedStatement($query, $params)->fetch(PDO::FETCH_ASSOC);;
+    }
+
+    public function createAccount($lastname, $firstname, $email, $password) {
+        $query = "INSERT INTO professeur(Nom_Professeur, Prenom_Professeur, Adresse_Email, Mot_De_Passe) VALUES(:lastname, :firstname, :email, :password)";
+        $params = [':lastname' => $lastname, ':firstname' => $firstname, ':email' => $email, ':password' => $password];
+
+        return $this->db->executePreparedStatement($query, $params);
+    }
 }
 ?>
