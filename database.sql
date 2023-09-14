@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 14 sep. 2023 à 13:22
+-- Généré le : jeu. 14 sep. 2023 à 14:52
 -- Version du serveur :  5.7.31
 -- Version de PHP : 7.3.21
 
@@ -29,12 +29,21 @@ SET time_zone = "+00:00";
 
 DROP TABLE IF EXISTS `professeur`;
 CREATE TABLE IF NOT EXISTS `professeur` (
-  `ID_Professeur` int(11) NOT NULL,
+  `ID_Professeur` int(11) NOT NULL AUTO_INCREMENT,
   `Nom_Professeur` varchar(30) DEFAULT NULL,
   `Prenom_Professeur` varchar(30) DEFAULT NULL,
   `Heures_Enseignant` int(11) DEFAULT NULL,
+  `Adresse_Email` varchar(30) NOT NULL,
+  `Mot_De_Passe` varchar(70) NOT NULL,
   PRIMARY KEY (`ID_Professeur`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `professeur`
+--
+
+INSERT INTO `professeur` (`ID_Professeur`, `Nom_Professeur`, `Prenom_Professeur`, `Heures_Enseignant`, `Adresse_Email`, `Mot_De_Passe`) VALUES
+(1, 'Demede', 'Michel', 10, 'admin@prof.fr', '$2y$10$WWBMQ6tBng/SPtV.lERzcet70dVlX.63hXhE22oROSXGxJZTV6npW');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
