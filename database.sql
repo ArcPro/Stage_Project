@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 14 sep. 2023 à 14:52
+-- Généré le : ven. 15 sep. 2023 à 09:02
 -- Version du serveur :  5.7.31
 -- Version de PHP : 7.3.21
 
@@ -24,6 +24,66 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `classe`
+--
+
+DROP TABLE IF EXISTS `classe`;
+CREATE TABLE IF NOT EXISTS `classe` (
+  `ID_Classe` int(11) NOT NULL AUTO_INCREMENT,
+  `Nom_Classe` varchar(30) NOT NULL,
+  `Nombre_Etudiants` int(11) NOT NULL,
+  PRIMARY KEY (`ID_Classe`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `enseignement`
+--
+
+DROP TABLE IF EXISTS `enseignement`;
+CREATE TABLE IF NOT EXISTS `enseignement` (
+  `Professeur_ID` int(11) NOT NULL,
+  `Classe_ID` int(11) NOT NULL,
+  `Heures_Enseignées` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `entreprise`
+--
+
+DROP TABLE IF EXISTS `entreprise`;
+CREATE TABLE IF NOT EXISTS `entreprise` (
+  `ID_Entreprise` int(11) NOT NULL,
+  `Nom_Entreprise` varchar(50) DEFAULT NULL,
+  `Ville` varchar(50) DEFAULT NULL,
+  `Arrondissement` varchar(2) DEFAULT NULL,
+  `Secteur_Activite` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`ID_Entreprise`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `etudiant`
+--
+
+DROP TABLE IF EXISTS `etudiant`;
+CREATE TABLE IF NOT EXISTS `etudiant` (
+  `ID_Etudiant` int(11) NOT NULL AUTO_INCREMENT,
+  `Nom_Etudiant` varchar(30) DEFAULT NULL,
+  `Prenom_Etudiant` varchar(30) DEFAULT NULL,
+  `Adresse_Etudiant` varchar(50) DEFAULT NULL,
+  `Telephone_Etudiant` varchar(10) DEFAULT NULL,
+  `Email_Etudiant` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`ID_Etudiant`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `professeur`
 --
 
@@ -35,15 +95,42 @@ CREATE TABLE IF NOT EXISTS `professeur` (
   `Heures_Enseignant` int(11) DEFAULT NULL,
   `Adresse_Email` varchar(30) NOT NULL,
   `Mot_De_Passe` varchar(70) NOT NULL,
+  `Permission` int(11) NOT NULL DEFAULT '0',
+  `Confirmation_Compte` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID_Professeur`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `professeur`
 --
 
-INSERT INTO `professeur` (`ID_Professeur`, `Nom_Professeur`, `Prenom_Professeur`, `Heures_Enseignant`, `Adresse_Email`, `Mot_De_Passe`) VALUES
-(1, 'Demede', 'Michel', 10, 'admin@prof.fr', '$2y$10$WWBMQ6tBng/SPtV.lERzcet70dVlX.63hXhE22oROSXGxJZTV6npW');
+INSERT INTO `professeur` (`ID_Professeur`, `Nom_Professeur`, `Prenom_Professeur`, `Heures_Enseignant`, `Adresse_Email`, `Mot_De_Passe`, `Permission`, `Confirmation_Compte`) VALUES
+(1, 'Demede', 'Michel', 10, 'admin@prof.fr', '$2y$10$WWBMQ6tBng/SPtV.lERzcet70dVlX.63hXhE22oROSXGxJZTV6npW', 1, 0),
+(2, 'Michaud', 'Christian', NULL, 'dede@gmail.com', '$2y$10$2uQ.aQP9fi2aYr3hGVzPYenvV6yat0Y/wb8xXSjvQf/KasaOIhaaG', 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `stage`
+--
+
+DROP TABLE IF EXISTS `stage`;
+CREATE TABLE IF NOT EXISTS `stage` (
+  `ID_Stage` int(11) NOT NULL,
+  `Sujet_Stage` varchar(30) DEFAULT NULL,
+  `Outils` varchar(30) DEFAULT NULL,
+  `Type_Stage` varchar(50) DEFAULT NULL,
+  `Technologie` varchar(30) DEFAULT NULL,
+  `Date_Debut` date DEFAULT NULL,
+  `Date_Fin` date DEFAULT NULL,
+  `Professeur_ID` int(11) NOT NULL,
+  `Etudiant_ID` int(11) DEFAULT NULL,
+  `Entreprise_ID` int(11) DEFAULT NULL,
+  `Date_Attestation` date DEFAULT NULL,
+  `Niveau_Etude` varchar(10) DEFAULT NULL,
+  `Distanciel` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`ID_Stage`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

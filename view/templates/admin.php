@@ -231,7 +231,9 @@ if (isset($_POST["logout"])) {
       </div>
             <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  if (strlen($_POST["email"]) != 0 && strlen($_POST["password"] != 0) && strlen($_POST["name"] != 0) && strlen($_POST["firstname"] != 0)) {
+  if (!empty($_POST["email"]) && !empty($_POST["password"]) && !empty($_POST["name"]) && !empty($_POST["firstname"])) {
+    
+
     $authController = new AuthController();
     $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
     if ($authController->register($_POST["name"], $_POST["firstname"], $_POST["email"], $password)) {
@@ -307,7 +309,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
         
       
-        <canvas class="my-4 w-100" style="display: block; box-sizing: border-box; height: 302px;"></canvas>
+        <canvas class="my-4 w-100" style="display: block; box-sizing: border-box; height: 192px;"></canvas>
     </main>
   </div>
 </div>

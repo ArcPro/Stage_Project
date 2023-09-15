@@ -13,13 +13,14 @@ class AuthController
         $user = $this->userModel->checkAccount($email, $password);
 
         if ($user) {
-            session_start();
+            // session_start();
             $_SESSION['user_id'] = $user['ID_Professeur'];
             $_SESSION['user_name'] = $user['Nom_Professeur'];
             $_SESSION['user_firstname'] = $user['Prenom_Professeur'];
             $_SESSION['user_hours'] = $user['Heures_Enseignant'];
             $_SESSION['user_email'] = $user['Adresse_Email'];
-            $_SESSION['user_permission'] = $user['permission'];
+            $_SESSION['user_permission'] = $user['Permission'];
+            $_SESSION['user_confirm'] = $user['Confirmation_Compte'];
             return true;
         }
         return false; 
@@ -28,6 +29,7 @@ class AuthController
     public function register($lastname, $firstname, $email, $password) {
         $user = $this->userModel->verifyAccount($email, $password);
         if (!$user) {
+            
             return $this->userModel->createAccount($lastname, $firstname, $email, $password);;
         }
         return false;
