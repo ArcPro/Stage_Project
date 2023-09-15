@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : ven. 15 sep. 2023 à 09:02
+-- Généré le : ven. 15 sep. 2023 à 15:16
 -- Version du serveur :  5.7.31
 -- Version de PHP : 7.3.21
 
@@ -33,7 +33,14 @@ CREATE TABLE IF NOT EXISTS `classe` (
   `Nom_Classe` varchar(30) NOT NULL,
   `Nombre_Etudiants` int(11) NOT NULL,
   PRIMARY KEY (`ID_Classe`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `classe`
+--
+
+INSERT INTO `classe` (`ID_Classe`, `Nom_Classe`, `Nombre_Etudiants`) VALUES
+(1, '1TSIO', 30);
 
 -- --------------------------------------------------------
 
@@ -78,8 +85,16 @@ CREATE TABLE IF NOT EXISTS `etudiant` (
   `Adresse_Etudiant` varchar(50) DEFAULT NULL,
   `Telephone_Etudiant` varchar(10) DEFAULT NULL,
   `Email_Etudiant` varchar(30) DEFAULT NULL,
+  `Classe_Etudiant` int(11) NOT NULL,
   PRIMARY KEY (`ID_Etudiant`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `etudiant`
+--
+
+INSERT INTO `etudiant` (`ID_Etudiant`, `Nom_Etudiant`, `Prenom_Etudiant`, `Adresse_Etudiant`, `Telephone_Etudiant`, `Email_Etudiant`, `Classe_Etudiant`) VALUES
+(1, 'Boudaoudi', 'Rayane', '13 rue de la paix', '0666666666', 'rboudaoudi@gmail.com', 1);
 
 -- --------------------------------------------------------
 
@@ -96,17 +111,18 @@ CREATE TABLE IF NOT EXISTS `professeur` (
   `Adresse_Email` varchar(30) NOT NULL,
   `Mot_De_Passe` varchar(70) NOT NULL,
   `Permission` int(11) NOT NULL DEFAULT '0',
-  `Confirmation_Compte` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID_Professeur`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `professeur`
 --
 
-INSERT INTO `professeur` (`ID_Professeur`, `Nom_Professeur`, `Prenom_Professeur`, `Heures_Enseignant`, `Adresse_Email`, `Mot_De_Passe`, `Permission`, `Confirmation_Compte`) VALUES
-(1, 'Demede', 'Michel', 10, 'admin@prof.fr', '$2y$10$WWBMQ6tBng/SPtV.lERzcet70dVlX.63hXhE22oROSXGxJZTV6npW', 1, 0),
-(2, 'Michaud', 'Christian', NULL, 'dede@gmail.com', '$2y$10$2uQ.aQP9fi2aYr3hGVzPYenvV6yat0Y/wb8xXSjvQf/KasaOIhaaG', 0, 0);
+INSERT INTO `professeur` (`ID_Professeur`, `Nom_Professeur`, `Prenom_Professeur`, `Heures_Enseignant`, `Adresse_Email`, `Mot_De_Passe`, `Permission`) VALUES
+(1, 'Demede', 'Michel', 10, 'admin@prof.fr', '$2y$10$WWBMQ6tBng/SPtV.lERzcet70dVlX.63hXhE22oROSXGxJZTV6npW', 2),
+(2, 'Michaud', 'Christian', NULL, 'dede@gmail.com', '$2y$10$4AkxvYCaGlj36c0ZI3wUz.qjOuu1ekAtImBsHuYeyEGE5FSV9dsNG', 1),
+(3, 'Michaud', 'Christian', NULL, 'dazdaz@gmail.com', '$2y$10$jpk0q8xLnl834Cb0qM/biekrmX9ZTQsgpqxzDjsrSpKKwWFd/cCIa', 1),
+(4, 'dazdaz', 'dadazd', NULL, 'dedede@gmail.com', '$2y$10$2YTgRYkTIr8VYRMBWd4FL.VBTFFsAD4uhVmtVyZOr5NALtKB6LJbK', 1);
 
 -- --------------------------------------------------------
 

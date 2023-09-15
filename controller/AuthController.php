@@ -20,7 +20,6 @@ class AuthController
             $_SESSION['user_hours'] = $user['Heures_Enseignant'];
             $_SESSION['user_email'] = $user['Adresse_Email'];
             $_SESSION['user_permission'] = $user['Permission'];
-            $_SESSION['user_confirm'] = $user['Confirmation_Compte'];
             return true;
         }
         return false; 
@@ -32,8 +31,17 @@ class AuthController
             
             return $this->userModel->createAccount($lastname, $firstname, $email, $password);;
         }
-        return false;
-        
+        return false; 
+    }
+
+    public function editPassword($email, $password) {
+        $hashPassword = password_hash(htmlspecialchars($password), PASSWORD_DEFAULT);
+        $user = $this->userModel->editPassword($email, $hashPassword);
+
+        if ($user) {
+            return true;
+        }
+        return false; 
     }
 
     public function logout() {

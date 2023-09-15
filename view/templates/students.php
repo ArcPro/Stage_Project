@@ -1,28 +1,65 @@
 <?php 
 require_once "../../config.php";
+require_once "header.php";
 session_start();
-if (!isset($_SESSION["user_id"]) || $_SESSION["user_permission"] == 0 || $_SESSION["user_permission"] == 1) {
-    header('Location: ../../index.php');
+if (!isset($_SESSION["user_id"])) {
+  header('Location: ../../index.php');
 }
-
 $authController = new AuthController();
 
 if (isset($_POST["logout"])) {
-    $authController->logout();
-    header('Location: ../../index.php');
+  $authController->logout();
+  header('Location: ../../index.php');
 }
 
+if ($_SESSION["user_permission"] == 0) {
+  echo '
+  <div class="modal fade" id="confirmPass-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="false">
+    <div class="modal-dialog">
+      <form class="modal-content" method="post">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Modification du mot de passe</h1>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="firstName">Mot de passe</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="" value="" required="">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="lastName">Confirmez le mot de passe</label>
+              <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="" value="" required="">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn btn-success" value="Confirmer" name="submit">
+        </div>
+      </form>
+    </div>
+  </div>';
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  if (isset($_POST["submit"])) {
+    if (isset($_POST["password"]) && isset($_POST["confirmPassword"])) {
+      $authController = new AuthController();
+      if ($authController->editPassword($_SESSION["user_email"], $_POST["password"])) {
+        $_SESSION["user_permission"] = 1;
+        header('Location: ../../index.php');
+      }
+    }
+  } 
+}
 ?>
+
+<script>$(document).ready(function() {
+  $('#confirmPass-modal').modal('show');
+});</script>
 <head>
-  <title>Administration</title>
+    <title>Étudiants</title>
   <link href="../../assets/css/dashboard.css" rel="stylesheet">
   <link href="../../assets/css/bootstrap.css" rel="stylesheet" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
 </head>
 <body>
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -92,6 +129,68 @@ if (isset($_POST["logout"])) {
   </symbol>
 </svg>
 
+<div class="modal fade" id="newStudent" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Création d'un étudiant</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="firstName">Nom</label>
+            <input type="text" class="form-control" id="lastname" name="lastname" required="true">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="lastName">Prénom</label>
+            <input type="text" class="form-control" id="firstname" name="firstname" required="true">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="firstName">Adresse</label>
+            <input type="text" class="form-control" id="adress" name="adress" required="true">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="lastName">Téléphone</label>
+            <input type="text" class="form-control" id="phone" name="phone" required="true">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="firstName">Adresse email</label>
+            <input type="text" class="form-control" id="email" name="email" required="true">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="lastName">Classe</label>
+            <?php 
+                $classroomController = new ClassroomController();
+                $students = $classroomController->getAllStudents();
+                print_r($students);
+              ?>
+            <select name="classe">
+              
+              <option value="france">France</option>
+              <option value="germany">Germany</option>
+              <option value="italy">Italy</option>
+              <option value="spain">Spain</option>
+            </select>
+            <input type="text" class="form-control" id="classe" name="classe" required="true">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <input type="submit" class="btn btn-success" value="Confirmer" name="submit">
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
 <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
   <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Gestion de stages</a>
 
@@ -126,7 +225,7 @@ if (isset($_POST["logout"])) {
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="students.php">
+              <a class="nav-link d-flex align-items-center gap-2 active" href="#">
                 <svg class="bi"><use xlink:href="#people"></use></svg>
                 Étudiants
               </a>
@@ -213,7 +312,7 @@ if (isset($_POST["logout"])) {
 
             <ul class="nav flex-column mb-auto">
               <li class="nav-item">
-                <a class="nav-link d-flex align-items-center gap-2 active" href="#">
+                <a class="nav-link d-flex align-items-center gap-2" href="admin.php">
                   <svg class="bi"><use xlink:href="#gear-wide-connected"></use></svg>
                   Administration
                 </a>
@@ -229,113 +328,49 @@ if (isset($_POST["logout"])) {
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Accueil</h1>
-      </div>
-            <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  if (!empty($_POST["email"]) && !empty($_POST["password"]) && !empty($_POST["name"]) && !empty($_POST["firstname"])) {
-    
-
-    $authController = new AuthController();
-    $password = password_hash(htmlspecialchars($_POST["password"]), PASSWORD_DEFAULT);
-    if ($authController->register(htmlspecialchars($_POST["name"]), htmlspecialchars($_POST["firstname"]), htmlspecialchars($_POST["email"]), htmlspecialchars($password))) {
-      echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-      Le compte de <a href="#" class="alert-link">'.htmlspecialchars($_POST["firstname"]).' '.htmlspecialchars($_POST["name"]).'</a> a été créé avec succès !<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>';
-    } else {
-      echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-      Le compte de <a href="#" class="alert-link">'.htmlspecialchars($_POST["firstname"]).' '.htmlspecialchars($_POST["name"]).'</a> n\'a pas été créé ou existe déjà !<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>';
-    }
-  }
-}
-            ?>
-      <div class="container col-xl-10 col-xxl-8 px-4 py-5">
-        <div class="row align-items-center g-lg-5 py-5">
-          <div class="col-lg-7 text-center text-lg-start">
-            <h1 class="display-4 fw-bold lh-1 text-body-emphasis mb-3">Créer un nouvel accès</h1>
-            <p class="col-lg-10 fs-4" style="margin-left:8%;">La page administrateur permet de créer un nouvel accès professeur. Une fois le compte fait, il suffira de communiquer le mot de passe au nouvel utilisateur afin qu'il puisse le changer.</p>
-          </div>
-          <div class="col-md-10 mx-auto col-lg-5">
-            <form class="p-4 p-md-5 border rounded-3 bg-body-tertiary" method="post">
-              <div class="form-floating mb-3">
-                <input type="name" id="name" name="name" class="form-control" id="floatingInput" placeholder="Demede">
-                <label for="floatingInput">Nom</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="firstname" id="firstname" name="firstname" class="form-control" id="floatingInput" placeholder="Michel">
-                <label for="floatingInput">Prénom</label>
-              </div>  
-              <div class="form-floating mb-3">
-                <input type="email" id="email" name="email" class="form-control" id="floatingInput" placeholder="demede@btssio.com">
-                <label for="floatingInput">Adresse Email</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="password" id="password" name="password" class="form-control" id="floatingPassword" placeholder="Mot de passe">
-                <label for="floatingPassword">Mot de passe (temporaire)</label>
-              </div>
-              
-              <!-- Button trigger modal -->
-              <button type="button" class="w-100 btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#newProf-modal"  onclick="createAccount()">
-                Créer le compte
-              </button>
-
-              <!-- Modal -->
-              <div class="modal fade" id="newProf-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Nouveau compte</h1>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <b>Nom : </b> <a id="lastnameLabel">SAISISSEZ UN NOM DE FAMILLE</a>
-                      <hr class="my-3">
-                      <b>Prénom : </b> <a id="firstnameLabel">SAISISSEZ UN PRENOM</a>
-                      <hr class="my-3">
-                      <b>Adresse Email : </b> <a id="emailLabel">SAISISSEZ UNE ADRESSE EMAIL</a>
-                      <hr class="my-3">
-                      <b>Mot de passe : </b> <a id="passwordLabel">SAISISSEZ UN MOT DE PASSE</a>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                      <input type="submit" class="btn btn-success" value="Confirmer" name="submit">
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </form>
-          </div>
         </div>
-      </div>
-        
+        <nav id="navbar-example2" class="navbar navbar-light bg-white px-3">
+            <a class="navbar-brand" href="#"></a>
+            <button type="button" class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#newStudent">
+                Ajouter
+              </button>
+          </nav>
+        <div class="bd-example">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nom</th>
+              <th scope="col">Prénom</th>
+              <th scope="col">Adresse</th>
+              <th scope="col">Téléphone</th>
+              <th scope="col">Étudiants</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>Mark</td>
+              <td>Otto</td>
+              <td>@mdo</td>
+              <td>@mdo</td>
+              <td>@mdo</td>
+            </tr>
+            <tr>
+              <th scope="row">1</th>
+              <td>Mark</td>
+              <td>Otto</td>
+              <td>@mdo</td>
+              <td>@mdo</td>
+              <td>@mdo</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
       
-        <canvas class="my-4 w-100" style="display: block; box-sizing: border-box; height: 192px;"></canvas>
+        <canvas class="my-4 w-100" style="display: block; box-sizing: border-box; height: 194px;"></canvas>
     </main>
   </div>
 </div>
 
 </body>
-
-<script>
-  function createAccount() {
-    let lastname = document.getElementById("name").value;
-    let firstname = document.getElementById("firstname").value;
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
-    console.log(email + password)
-    if (email.length != 0) {
-      let emailLabel = document.getElementById("lastnameLabel").innerHTML = lastname;
-    }
-    if (password.length != 0) {
-      let passwordLabel = document.getElementById("firstnameLabel").innerHTML = firstname;
-    }
-    if (email.length != 0) {
-      let emailLabel = document.getElementById("emailLabel").innerHTML = email;
-    }
-    if (password.length != 0) {
-      let passwordLabel = document.getElementById("passwordLabel").innerHTML = password;
-    }
-  }
-</script>
-

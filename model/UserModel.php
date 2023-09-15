@@ -32,5 +32,12 @@ class UserModel {
 
         return $this->db->executePreparedStatement($query, $params);
     }
+
+    public function editPassword($email, $password) {
+        $query = "UPDATE professeur SET Mot_De_Passe = :password, Permission = :permission WHERE Adresse_Email = :email";
+        $params = [':email' => $email, ':password' => $password, 'permission' => 1];
+
+        return $this->db->executePreparedStatement($query, $params);
+    }
 }
 ?>
