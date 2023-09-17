@@ -23,7 +23,7 @@ class UserModel {
         $query = "SELECT * FROM professeur WHERE Adresse_Email = :email";
         $params = [':email' => $email];
 
-        return $this->db->executePreparedStatement($query, $params)->fetch(PDO::FETCH_ASSOC);;
+        return $this->db->executePreparedStatement($query, $params)->fetch(PDO::FETCH_ASSOC);
     }
 
     public function createAccount($lastname, $firstname, $email, $password) {

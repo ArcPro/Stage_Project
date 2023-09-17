@@ -6,6 +6,7 @@ if (!isset($_SESSION["user_id"])) {
   header('Location: ../../index.php');
 }
 $authController = new AuthController();
+$classroomController = new ClassroomController();
 
 if (isset($_POST["logout"])) {
   $authController->logout();
@@ -49,13 +50,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: ../../index.php');
       }
     }
-  } 
+  }
+  else if (isset($_POST["submitStudent"])) {
+    if (isset($_POST["lastname"]) && isset($_POST["firstname"]) && isset($_POST["address"]) && isset($_POST["phone"]) && isset($_POST["email"]) && isset($_POST["classe"])) {
+      $classroomController->createNewStudent(htmlspecialchars($_POST["lastname"]), htmlspecialchars($_POST["firstname"]), htmlspecialchars($_POST["address"]), htmlspecialchars($_POST["phone"]), htmlspecialchars($_POST["email"]), htmlspecialchars($_POST["classe"]));
+    }
+  }
+  else if (isset($_POST["submitUpdate"])) {
+    echo "tezfez";
+  }
 }
 ?>
 
 <script>$(document).ready(function() {
   $('#confirmPass-modal').modal('show');
-});</script>
+});
+var isEditing = false;</script>
 <head>
     <title>Étudiants</title>
   <link href="../../assets/css/dashboard.css" rel="stylesheet">
@@ -150,39 +160,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="firstName">Adresse</label>
-            <input type="text" class="form-control" id="adress" name="adress" required="true">
+            <input type="text" class="form-control" id="address" name="address" required="true">
           </div>
           <div class="col-md-6 mb-3">
             <label for="lastName">Téléphone</label>
-            <input type="text" class="form-control" id="phone" name="phone" required="true">
+            <input type="text" class="form-control" id="phone" name="phone" required="true" pattern="[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}" placeholder="06 XX XX XX XX">
           </div>
         </div>
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="firstName">Adresse email</label>
-            <input type="text" class="form-control" id="email" name="email" required="true">
+            <input type="email" class="form-control" id="email" name="email" required="true">
           </div>
           <div class="col-md-6 mb-3">
             <label for="lastName">Classe</label>
+            <select name="classe" style="margin-top:37px;margin-left:20px;width:100px;">
             <?php 
-                $classroomController = new ClassroomController();
-                $students = $classroomController->getAllStudents();
-                print_r($students);
+                $classes = $classroomController->getAllClassrooms();
+                foreach ($classes as $classe) {
+                  echo '<option value="'.$classe["Nom_Classe"].'">'.$classe["Nom_Classe"].'</option>';
+                }
               ?>
-            <select name="classe">
-              
-              <option value="france">France</option>
-              <option value="germany">Germany</option>
-              <option value="italy">Italy</option>
-              <option value="spain">Spain</option>
+
             </select>
-            <input type="text" class="form-control" id="classe" name="classe" required="true">
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-        <input type="submit" class="btn btn-success" value="Confirmer" name="submit">
+        <input type="submit" class="btn btn-success" value="Confirmer" name="submitStudent">
       </div>
     </form>
   </div>
@@ -214,7 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="container-fluid">
   <div class="row">
-    <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+    <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary" style="height:939px;">
       <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
         <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
           <ul class="nav flex-column">
@@ -330,7 +336,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h1 class="h2">Accueil</h1>
         </div>
         <nav id="navbar-example2" class="navbar navbar-light bg-white px-3">
-            <a class="navbar-brand" href="#"></a>
+            <?php 
+            $students = $classroomController->getAllStudents();
+            $perPage = 15; 
+            $page = isset($_GET['page']) ? $_GET['page'] : 1; 
+            $totalStudents = count($students);
+            $totalPages = ceil($totalStudents / $perPage);
+            $offset = ($page - 1) * $perPage;
+  
+            $count = ($page - 1) * $perPage + 1; // Calcul du compteur en fonction de la page
+  
+            // Obtenez un sous-ensemble d'étudiants pour cette page
+            $studentsPerPage = array_slice($students, $offset, $perPage);
+            $result = '';
+  
+            foreach ($studentsPerPage as $student) {
+              $result = $result . '
+                <tr id="'.$count.'">
+                    <th scope="row">'.$count.'</th>
+                    <td>'.$student["Nom_Etudiant"].'</td>
+                    <td>'.$student["Prenom_Etudiant"].'</td>
+                    <td>'.$student["Adresse_Etudiant"].'</td>
+                    <td>'.$student["Telephone_Etudiant"].'</td>
+                    <td>'.$student["Email_Etudiant"].'</td>
+                    <td>'.$classroomController->getClassNameByID($student["Classe_Etudiant"])["Nom_Classe"].'</td>
+                    <td><button type="button" class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#newStudent">
+                    Ajouter
+                  </button>'.$student["ID_Etudiant"].'</td>
+                </tr>
+                ';
+                $count++;
+            }
+
+            echo '<ul class="navbar-brand pagination pagination-sm" style="box-shadow:none;background-color:white;">';
+            for ($i = 1; $i <= $totalPages; $i++) {
+                if ($i == $page) {
+                    echo '<li class="page-item active" aria-current="page"><a class="page-link" href="?page='.$i.'  ">' . $i . '</a></span>';
+                } else {
+                    echo '<li class="page-item"><a class="page-link" href="?page='.$i.'">' . $i . '</a></li>';
+                }
+            }
+            echo '</ul>';?>
             <button type="button" class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#newStudent">
                 Ajouter
               </button>
@@ -344,33 +390,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <th scope="col">Prénom</th>
               <th scope="col">Adresse</th>
               <th scope="col">Téléphone</th>
-              <th scope="col">Étudiants</th>
+              <th scope="col">Email</th>
+              <th scope="col">Classe</th>
+              <th scope="col">Options</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-            </tr>
+          <?php 
+          echo $result;
+          ?>
           </tbody>
         </table>
         </div>
-      
-        <canvas class="my-4 w-100" style="display: block; box-sizing: border-box; height: 194px;"></canvas>
+        
+        <canvas class="my-4 w-100" style="display: block; box-sizing: border-box; height: 73px;"></canvas>
     </main>
   </div>
 </div>
 
 </body>
+
+<!-- row.innerHTML = '<form method="post"><th scope="row">'+ id +'</th> <td><input type="text" style="width:120px;" class="form-control form-control-sm" name="updateLastname" required></td> <td><input type="text" style="width:100px;" class="form-control form-control-sm" name="updateFirstname" required></td> <td><input style="width:200px;" type="text" class="form-control form-control-sm" name="updateAddress"></td> <td><input type="phone" class="form-control form-control-sm" style="width:120px;" name="updatePhone" pattern="[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}" placeholder="06 XX XX XX XX" required></td> <td><input type="email" class="form-control form-control-sm" name="updateEmail" style="width:200px;" required></td> <td><select name="updateClasse" style="width:90px;margin-top:2.5px;">'+result+'</select></td><input type="hidden" name="id" value="'+idUser+'"><input class="btn btn-success" style="height:48px;width:50px;" value="OK" type="submit" name="submitUpdate"></form></tr>'; -->
