@@ -499,7 +499,7 @@ function editStudent(student) {
             echo '<ul class="navbar-brand pagination pagination-sm" style="box-shadow:none;background-color:white;">';
             for ($i = 1; $i <= $totalPages; $i++) {
                 if ($i == $page) {
-                    echo '<li class="page-item active" aria-current="page"><a class="page-link" href="?page='.$i.'  ">' . $i . '</a></span>';
+                    echo '<li class="page-item active" aria-current="page"><a class="page-link" style="background-color:#198754; border-color:#157347;" href="?page='.$i.'  ">' . $i . '</a></span>';
                 } else {
                     echo '<li class="page-item"><a class="page-link" href="?page='.$i.'">' . $i . '</a></li>';
                 }
