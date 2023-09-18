@@ -4196,7 +4196,6 @@
   
   .page-link {
     position: relative;
-    display: block;
     padding: 0.5rem 0.75rem;
     margin-left: -1px;
     line-height: 1.25;
@@ -4236,8 +4235,8 @@
   .page-item.active .page-link {
     z-index: 1;
     color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #198754;
+    border-color: #198754;
   }
   
   .page-item.disabled .page-link {

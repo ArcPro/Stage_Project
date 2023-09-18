@@ -1,17 +1,66 @@
 <?php 
 require_once "../../config.php";
+require_once "header.php";
 session_start();
 if (!isset($_SESSION["user_id"])) {
-    header('Location: ../../index.php');
+  header('Location: ../../index.php');
 }
 $authController = new AuthController();
 
 if (isset($_POST["logout"])) {
-    $authController->logout();
-    header('Location: ../../index.php');
+  $authController->logout();
+  header('Location: ../../index.php');
+}
+
+if ($_SESSION["user_permission"] == 0) {
+  echo '
+  <div class="modal fade" id="confirmPass-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="false">
+    <div class="modal-dialog">
+      <form class="modal-content" method="post">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Modification du mot de passe</h1>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="firstName">Mot de passe</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="" value="" required="">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="lastName">Confirmez le mot de passe</label>
+              <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="" value="" required="">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn btn-success" value="Confirmer" name="submit">
+        </div>
+      </form>
+    </div>
+  </div>';
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  if (isset($_POST["submit"])) {
+    if (isset($_POST["password"]) && isset($_POST["confirmPassword"])) {
+      $authController = new AuthController();
+      if ($authController->editPassword($_SESSION["user_email"], $_POST["password"])) {
+        $_SESSION["user_permission"] = 1;
+        header('Location: ../../index.php');
+      }
+    }
+  } 
 }
 ?>
-<head><link href="../../assets/css/dashboard.css" rel="stylesheet"><link href="../../assets/css/bootstrap.css" rel="stylesheet" crossorigin="anonymous"></head>
+
+<script>$(document).ready(function() {
+  $('#confirmPass-modal').modal('show');
+});</script>
+<head>
+  <title>Accueil</title>
+  <link href="../../assets/css/dashboard.css" rel="stylesheet">
+  <link href="../../assets/css/bootstrap.css" rel="stylesheet" crossorigin="anonymous">
+</head>
 <body>
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
       <symbol id="check2" viewBox="0 0 16 16">
@@ -114,7 +163,7 @@ if (isset($_POST["logout"])) {
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
+              <a class="nav-link d-flex align-items-center gap-2" href="students.php">
                 <svg class="bi"><use xlink:href="#people"></use></svg>
                 Étudiants
               </a>
@@ -196,7 +245,7 @@ if (isset($_POST["logout"])) {
             </form>
           </ul>
         <?php
-        if ($_SESSION["user_permission"] == 1) {
+        if ($_SESSION["user_permission"] == 2) {
             echo '<hr class="my-3">
 
             <ul class="nav flex-column mb-auto">

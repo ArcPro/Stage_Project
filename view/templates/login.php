@@ -9,7 +9,7 @@
       <div class="checkbox mb-3"> 
 
       <?php 
-        require_once 'controller/AuthController.php';
+        // require_once 'controller/AuthController.php';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           $email = $_POST['email'];
