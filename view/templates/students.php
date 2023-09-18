@@ -56,8 +56,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $classroomController->createNewStudent(htmlspecialchars($_POST["lastname"]), htmlspecialchars($_POST["firstname"]), htmlspecialchars($_POST["address"]), htmlspecialchars($_POST["phone"]), htmlspecialchars($_POST["email"]), htmlspecialchars($_POST["classe"]));
     }
   }
-  else if (isset($_POST["submitUpdate"])) {
-    echo "tezfez";
+  else if (isset($_POST["editSubmitStudent"])) {
+    if (isset($_POST["editId"]) && isset($_POST["editLastname"]) && isset($_POST["editFirstname"]) && isset($_POST["editAddress"]) && isset($_POST["editPhone"]) && isset($_POST["editEmail"]) && isset($_POST["editClasse"])) {
+      $classroomController->editStudent(htmlspecialchars($_POST["editId"]), htmlspecialchars($_POST["editLastname"]), htmlspecialchars($_POST["editFirstname"]), htmlspecialchars($_POST["editAddress"]), htmlspecialchars($_POST["editPhone"]), htmlspecialchars($_POST["editEmail"]), htmlspecialchars($_POST["editClasse"]));
+    }
+  }
+  else if (isset($_POST["deleteSubmitStudent"])) {
+    if (isset($_POST["deleteId"])) {
+      $classroomController->deleteStudent(htmlspecialchars($_POST["deleteId"]));
+    }
   }
 }
 ?>
@@ -65,11 +72,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script>$(document).ready(function() {
   $('#confirmPass-modal').modal('show');
 });
-var isEditing = false;</script>
+var isEditing = false;
+
+function deleteStudent(student) {
+  console.log(student)
+  document.getElementById("deleteId").value = student.ID_Etudiant
+  document.getElementById("deleteStudentText").innerHTML = "Êtes-vous sûr de vouloir supprimer " + student.Nom_Etudiant + " " + student.Prenom_Etudiant + " ?"
+}
+
+function editStudent(student) {
+  console.log(student)
+  document.getElementById("editId").value = student.ID_Etudiant
+  document.getElementById("editLastname").value = student.Nom_Etudiant
+  document.getElementById("editFirstname").value = student.Prenom_Etudiant
+  document.getElementById("editAddress").value = student.Adresse_Etudiant
+  document.getElementById("editPhone").value = student.Telephone_Etudiant
+  document.getElementById("editEmail").value = student.Email_Etudiant
+}
+
+
+</script>
 <head>
     <title>Étudiants</title>
   <link href="../../assets/css/dashboard.css" rel="stylesheet">
   <link href="../../assets/css/bootstrap.css" rel="stylesheet" crossorigin="anonymous">
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" crossorigin="anonymous">
+  
 </head>
 <body>
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -194,7 +222,96 @@ var isEditing = false;</script>
   </div>
 </div>
 
+<div class="modal fade" id="editStudent" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modifier un étudiant</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <input type="hidden" name="editId" id="editId" value="id">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="firstName">Nom</label>
+            <input type="text" class="form-control" id="editLastname" name="editLastname" required="true">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="lastName">Prénom</label>
+            <input type="text" class="form-control" id="editFirstname" name="editFirstname" required="true">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="firstName">Adresse</label>
+            <input type="text" class="form-control" id="editAddress" name="editAddress" required="true">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="lastName">Téléphone</label>
+            <input type="text" class="form-control" id="editPhone" name="editPhone" required="true" pattern="[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}" placeholder="06 XX XX XX XX">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="firstName">Adresse email</label>
+            <input type="email" class="form-control" id="editEmail" name="editEmail" required="true">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="lastName">Classe</label>
+            <select name="editClasse" style="margin-top:37px;margin-left:20px;width:100px;">
+            <?php 
+                $classes = $classroomController->getAllClassrooms();
+                foreach ($classes as $classe) {
+                  echo '<option value="'.$classe["Nom_Classe"].'">'.$classe["Nom_Classe"].'</option>';
+                }
+              ?>
 
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <input type="submit" class="btn btn-success" value="Modifier" name="editSubmitStudent">
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteStudent" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" method="post">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Supprimer un étudiant</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <input type="hidden" name="deleteId" id="deleteId" value="id">
+      <div class="modal-body" id="deleteStudentText">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <input type="submit" class="btn btn-danger" value="Supprimer" name="deleteSubmitStudent">
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade show" id="showStudent" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <form class="modal-content" method="post">
+      <div class="modal-header">
+        <h1 class="modal-title fs-4" id="exampleModalXlLabel">Informations</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODALS -->
 
 
 <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
@@ -360,12 +477,23 @@ var isEditing = false;</script>
                     <td>'.$student["Telephone_Etudiant"].'</td>
                     <td>'.$student["Email_Etudiant"].'</td>
                     <td>'.$classroomController->getClassNameByID($student["Classe_Etudiant"])["Nom_Classe"].'</td>
-                    <td><button type="button" class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#newStudent">
-                    Ajouter
-                  </button>'.$student["ID_Etudiant"].'</td>
+                    <td>
+                      <ul class="list-inline m-0">
+                        <li class="list-inline-item">
+                          <button type="button" class="btn btn-primary btn-sm rounded-0" data-toggle="tooltip" data-bs-toggle="modal" data-placement="top" data-original-title="Montrer" data-bs-target="#showStudent" onclick=\'showStudent('.json_encode($student).')\'><i class="fa fa-table"></i></button>
+                        </li>
+                        <li class="list-inline-item">
+                          <button type="button" class="btn btn-success btn-sm rounded-0" data-toggle="tooltip" data-bs-toggle="modal" data-placement="top" data-original-title="Modifier" data-bs-target="#editStudent" onclick=\'editStudent('.json_encode($student).')\'><i class="fa fa-edit"></i></button>
+                        </li>
+                        <li class="list-inline-item">
+                          <button type="button" class="btn btn-danger btn-sm rounded-0" data-toggle="tooltip" data-bs-toggle="modal" data-placement="top" data-original-title="Supprimer" data-bs-target="#deleteStudent" onclick=\'deleteStudent('.json_encode($student).')\'><i class="fa fa-trash"></i></button>
+                        </li>
+                      </ul>
+                    </td>
                 </tr>
                 ';
                 $count++;
+                // $student["ID_Etudiant"]
             }
 
             echo '<ul class="navbar-brand pagination pagination-sm" style="box-shadow:none;background-color:white;">';

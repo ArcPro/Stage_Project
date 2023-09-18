@@ -34,5 +34,25 @@ class ClassroomModel {
 
         return $this->db->executePreparedStatement($query, $params);
     }
+
+    public function editStudent($id, $lastname, $firstname, $address, $phone, $email, $classe) {
+        $query = "UPDATE etudiant SET Nom_Etudiant = :lastname, Prenom_Etudiant = :firstname, Adresse_Etudiant = :address, Telephone_Etudiant = :phone, Email_Etudiant = :email, Classe_Etudiant = :classe WHERE ID_Etudiant = :id";
+        $params = [':id' => $id, 
+        ':lastname' => $lastname, 
+        ':firstname' => $firstname, 
+        ':address' => $address, 
+        ':phone' => $phone, 
+        ':email' => $email, 
+        ':classe' => $classe];
+
+        return $this->db->executePreparedStatement($query, $params);
+    }
+
+    public function deleteStudent($id) {
+        $query = "DELETE FROM etudiant WHERE ID_Etudiant = :id";
+        $params = [':id' => $id];
+
+        return $this->db->executePreparedStatement($query, $params);
+    }
 }
 ?>

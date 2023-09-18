@@ -24,5 +24,13 @@ class ClassroomController
         return $this->classroomModel->createNewStudent($lastname, $firstname, $address, $phone, $email, $classe); 
     }
 
+    public function editStudent($id, $lastname, $firstname, $address, $phone, $email, $classe) {
+        return $this->classroomModel->editStudent($id, $lastname, $firstname, $address, $phone, $email, $classe);
+    }
+
+    public function deleteStudent($id) {
+        return $this->classroomModel->deleteStudent($id);
+    }
+
 }
 ?>
