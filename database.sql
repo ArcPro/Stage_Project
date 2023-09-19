@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 18 sep. 2023 à 22:58
+-- Généré le : mar. 19 sep. 2023 à 21:27
 -- Version du serveur : 10.4.27-MariaDB
 -- Version de PHP : 8.0.25
 
@@ -87,7 +87,7 @@ CREATE TABLE `etudiant` (
 --
 
 INSERT INTO `etudiant` (`ID_Etudiant`, `Nom_Etudiant`, `Prenom_Etudiant`, `Adresse_Etudiant`, `Telephone_Etudiant`, `Email_Etudiant`, `Classe_Etudiant`) VALUES
-(1, 'Boudaoudi', 'Rayane', '13 rue de la paix', '0666666666', 'rboudaoudi@gmail.com', 1),
+(1, 'Boudaoudi', 'Rayane', '13 rue de la paix', '06 66 66 66 66', 'rboudaoudi@gmail.com', 1),
 (2, 'Raingeval', 'Hadrien', '155 rue lodi', '06 88 65 1', 'raingeval@gmail.com', 1),
 (4, 'Muntaner', 'Thomas', '155 boulevard baille', '06 66 66 66 67', 'ghostdezine@gmail.com', 1),
 (5, 'Zwizi', 'Mohamed', '123 ezde e', '06 11 11 11 11', 'mohazizi@gmail.com', 1),
