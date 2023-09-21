@@ -44,7 +44,6 @@ if ($_SESSION["user_permission"] == 0) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST["submit"])) {
     if (isset($_POST["password"]) && isset($_POST["confirmPassword"])) {
-      $authController = new AuthController();
       if ($authController->editPassword($_SESSION["user_email"], $_POST["password"])) {
         $_SESSION["user_permission"] = 1;
         header('Location: ../../index.php');
