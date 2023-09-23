@@ -6,6 +6,7 @@ if (!isset($_SESSION["user_id"])) {
   header('Location: ../../index.php');
 }
 $authController = new AuthController();
+$classroomController = new ClassroomController();
 $companyController = new CompanyController();
 
 if (isset($_POST["logout"])) {

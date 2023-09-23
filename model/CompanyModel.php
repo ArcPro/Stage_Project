@@ -20,7 +20,23 @@ class CompanyModel {
         ':city' => $city, 
         ':arrondissement' => $arrondissement, 
         ':sector' => $sector];
-        print_r($this->db->executePreparedStatement($query, $params));
+        return $this->db->executePreparedStatement($query, $params);
+    }
+
+    public function deleteCompany($id) {
+        $query = "DELETE FROM entreprise WHERE ID_Entreprise = :id";
+        $params = [':id' => $id];
+
+        return $this->db->executePreparedStatement($query, $params);
+    }
+
+    public function createNewCompany($name, $city, $arrondissement, $sector) {
+        $query = "INSERT INTO entreprise(Nom_Entreprise, Ville, Arrondissement, Secteur_Activite) VALUES(:name, :city, :arrondissement, :sector)";
+        $params = [':name' => $name, 
+        ':city' => $city, 
+        ':arrondissement' => $arrondissement, 
+        ':sector' => $sector];
+
         return $this->db->executePreparedStatement($query, $params);
     }
 }

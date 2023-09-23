@@ -44,9 +44,7 @@ class ClassroomModel {
         ':phone' => $phone, 
         ':email' => $email, 
         ':classe' => $classe];
-        $result = $this->db->executePreparedStatement($query, $params);
-        print_r($result);
-        return $result;
+        return $this->db->executePreparedStatement($query, $params);
     }
 
     public function deleteStudent($id) {
