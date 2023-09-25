@@ -30,7 +30,7 @@ class ClassroomModel {
 
     public function createNewStudent($lastname, $firstname, $address, $phone, $email, $classe) {
         $query = "INSERT INTO etudiant(Nom_Etudiant, Prenom_Etudiant, Adresse_Etudiant, Telephone_Etudiant, Email_Etudiant, Classe_Etudiant) VALUES(:lastname, :firstname, :address, :phone, :email, :classe)";
-        $params = [':lastname' => $lastname, ':firstname' => $firstname, ':address' => $address, 'phone' => $phone, ':email' => $email, ':classe' => $classe];
+        $params = [':lastname' => $lastname, ':firstname' => $firstname, ':address' => $address, ':phone' => $phone, ':email' => $email, ':classe' => $classe];
 
         return $this->db->executePreparedStatement($query, $params);
     }
@@ -44,7 +44,6 @@ class ClassroomModel {
         ':phone' => $phone, 
         ':email' => $email, 
         ':classe' => $classe];
-
         return $this->db->executePreparedStatement($query, $params);
     }
 

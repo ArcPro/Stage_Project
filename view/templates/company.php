@@ -6,7 +6,7 @@ if (!isset($_SESSION["user_id"])) {
   header('Location: ../../index.php');
 }
 $authController = new AuthController();
-$classroomController = new ClassroomController();
+$companyController = new CompanyController();
 
 if (isset($_POST["logout"])) {
   $authController->logout();
@@ -44,26 +44,25 @@ if ($_SESSION["user_permission"] == 0) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST["submit"])) {
     if (isset($_POST["password"]) && isset($_POST["confirmPassword"])) {
-      $authController = new AuthController();
       if ($authController->editPassword($_SESSION["user_email"], $_POST["password"])) {
         $_SESSION["user_permission"] = 1;
         header('Location: ../../index.php');
       }
     }
   }
-  else if (isset($_POST["submitStudent"])) {
-    if (isset($_POST["lastname"]) && isset($_POST["firstname"]) && isset($_POST["address"]) && isset($_POST["phone"]) && isset($_POST["email"]) && isset($_POST["classe"])) {
-      $classroomController->createNewStudent(htmlspecialchars($_POST["lastname"]), htmlspecialchars($_POST["firstname"]), htmlspecialchars($_POST["address"]), htmlspecialchars($_POST["phone"]), htmlspecialchars($_POST["email"]), htmlspecialchars($_POST["classe"]));
+  else if (isset($_POST["submitCompany"])) {
+    if (isset($_POST["name"]) && isset($_POST["city"]) && isset($_POST["arrondissement"]) && isset($_POST["sector"])) {
+      $companyController->createNewCompany(htmlspecialchars($_POST["name"]), htmlspecialchars($_POST["city"]), htmlspecialchars($_POST["arrondissement"]), htmlspecialchars($_POST["sector"]));
     }
   }
-  else if (isset($_POST["editSubmitStudent"])) {
-    if (isset($_POST["editId"]) && isset($_POST["editLastname"]) && isset($_POST["editFirstname"]) && isset($_POST["editAddress"]) && isset($_POST["editPhone"]) && isset($_POST["editEmail"]) && isset($_POST["editClasse"])) {
-      $classroomController->editStudent(htmlspecialchars($_POST["editId"]), htmlspecialchars($_POST["editLastname"]), htmlspecialchars($_POST["editFirstname"]), htmlspecialchars($_POST["editAddress"]), htmlspecialchars($_POST["editPhone"]), htmlspecialchars($_POST["editEmail"]), htmlspecialchars($_POST["editClasse"]));
+  else if (isset($_POST["editSubmitCompany"])) {
+    if (isset($_POST["editId"]) && isset($_POST["editName"]) && isset($_POST["editCity"]) && isset($_POST["editArrondissement"]) && isset($_POST["editSector"])) {
+      $companyController->editCompany(htmlspecialchars($_POST["editId"]), htmlspecialchars($_POST["editName"]), htmlspecialchars($_POST["editCity"]), htmlspecialchars($_POST["editArrondissement"]), htmlspecialchars($_POST["editSector"]));
     }
   }
-  else if (isset($_POST["deleteSubmitStudent"])) {
+  else if (isset($_POST["deleteSubmitCompany"])) {
     if (isset($_POST["deleteId"])) {
-      $classroomController->deleteStudent(htmlspecialchars($_POST["deleteId"]));
+      $companyController->deleteCompany(htmlspecialchars($_POST["deleteId"]));
     }
   }
 }
@@ -72,22 +71,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script>$(document).ready(function() {
   $('#confirmPass-modal').modal('show');
 });
-var isEditing = false;
 
-function deleteStudent(student) {
-  console.log(student)
-  document.getElementById("deleteId").value = student.ID_Etudiant
-  document.getElementById("deleteStudentText").innerHTML = "Êtes-vous sûr de vouloir supprimer " + student.Nom_Etudiant + " " + student.Prenom_Etudiant + " ?"
+function deleteCompany(company) {
+  console.log(company)
+  document.getElementById("deleteId").value = company.ID_Entreprise
+  document.getElementById("deleteCompanyText").innerHTML = "Êtes-vous sûr de vouloir supprimer " + company.Nom_Entreprise + " ?"
 }
 
-function editStudent(student) {
-  console.log(student)
-  document.getElementById("editId").value = student.ID_Etudiant
-  document.getElementById("editLastname").value = student.Nom_Etudiant
-  document.getElementById("editFirstname").value = student.Prenom_Etudiant
-  document.getElementById("editAddress").value = student.Adresse_Etudiant
-  document.getElementById("editPhone").value = student.Telephone_Etudiant
-  document.getElementById("editEmail").value = student.Email_Etudiant
+function editCompany(company) {
+  console.log(company)
+  document.getElementById("editId").value = company.ID_Entreprise
+  document.getElementById("editName").value = company.Nom_Entreprise
+  document.getElementById("editCity").value = company.Ville
+  document.getElementById("editArrondissement").value = company.Arrondissement
+  document.getElementById("editSector").value = company.Secteur_Activite
 }
 
 
@@ -167,7 +164,7 @@ function editStudent(student) {
   </symbol>
 </svg>
 
-<div class="modal fade" id="newStudent" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="newCompany" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form class="modal-content" method="post">
       <div class="modal-header">
@@ -177,127 +174,91 @@ function editStudent(student) {
       <div class="modal-body">
         <div class="row">
           <div class="col-md-6 mb-3">
-            <label for="firstName">Nom</label>
-            <input type="text" class="form-control" id="lastname" name="lastname" required="true">
+            <label for="Name">Nom</label>
+            <input type="text" class="form-control" id="name" name="name" required="true">
           </div>
           <div class="col-md-6 mb-3">
-            <label for="lastName">Ville</label>
-            <input type="text" class="form-control" id="firstname" name="firstname" required="true">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="firstName">Arrondissement</label>
-            <input type="text" class="form-control" id="address" name="address" required="true">
-          </div>
-          <div class="col-md-6 mb-3">
-            <label for="lastName">Secteur d'activité</label>
-            <input type="text" class="form-control" id="phone" name="phone" required="true" pattern="[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}" placeholder="06 XX XX XX XX">
+            <label for="City">Ville</label>
+            <input type="text" class="form-control" id="city" name="city" required="true">
           </div>
         </div>
         <div class="row">
           <div class="col-md-6 mb-3">
-            <label for="firstName">Adresse email</label>
-            <input type="email" class="form-control" id="email" name="email" required="true">
+            <label for="Arr">Arrondissement</label>
+            <input type="text" class="form-control" id="arrondissement" name="arrondissement" required="true">
           </div>
           <div class="col-md-6 mb-3">
-            <label for="lastName">Classe</label>
-            <select name="classe" style="margin-top:37px;margin-left:20px;width:100px;">
-            <?php 
-                $classes = $classroomController->getAllClassrooms();
-                foreach ($classes as $classe) {
-                  echo '<option value="'.$classe["Nom_Classe"].'">'.$classe["Nom_Classe"].'</option>';
-                }
-              ?>
-
-            </select>
+            <label for="Sector">Secteur d'activité</label>
+            <input type="text" class="form-control" id="sector" name="sector" required="true">
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-        <input type="submit" class="btn btn-success" value="Confirmer" name="submitStudent">
+        <input type="submit" class="btn btn-success" value="Confirmer" name="submitCompany">
       </div>
     </form>
   </div>
 </div>
 
-<div class="modal fade" id="editStudent" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="editCompany" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form class="modal-content" method="post">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modifier un étudiant</h1>
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modifier une entreprise</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <input type="hidden" name="editId" id="editId" value="id">
       <div class="modal-body">
         <div class="row">
           <div class="col-md-6 mb-3">
-            <label for="firstName">Nom</label>
-            <input type="text" class="form-control" id="editLastname" name="editLastname" required="true">
+            <label for="Name">Nom</label>
+            <input type="text" class="form-control" id="editName" name="editName" required="true">
           </div>
           <div class="col-md-6 mb-3">
-            <label for="lastName">Prénom</label>
-            <input type="text" class="form-control" id="editFirstname" name="editFirstname" required="true">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="firstName">Adresse</label>
-            <input type="text" class="form-control" id="editAddress" name="editAddress" required="true">
-          </div>
-          <div class="col-md-6 mb-3">
-            <label for="lastName">Téléphone</label>
-            <input type="text" class="form-control" id="editPhone" name="editPhone" required="true" pattern="[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}" placeholder="06 XX XX XX XX">
+            <label for="City">Ville</label>
+            <input type="text" class="form-control" id="editCity" name="editCity" required="true">
           </div>
         </div>
         <div class="row">
           <div class="col-md-6 mb-3">
-            <label for="firstName">Adresse email</label>
-            <input type="email" class="form-control" id="editEmail" name="editEmail" required="true">
+            <label for="Arr">Arrondissement</label>
+            <input type="text" class="form-control" id="editArrondissement" name="editArrondissement" required="true">
           </div>
           <div class="col-md-6 mb-3">
-            <label for="lastName">Classe</label>
-            <select name="editClasse" style="margin-top:37px;margin-left:20px;width:100px;">
-            <?php 
-                $classes = $classroomController->getAllClassrooms();
-                foreach ($classes as $classe) {
-                  echo '<option value="'.$classe["Nom_Classe"].'">'.$classe["Nom_Classe"].'</option>';
-                }
-              ?>
-
-            </select>
+            <label for="Sector">Secteur d'activité</label>
+            <input type="text" class="form-control" id="editSector" name="editSector" required="true">
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-        <input type="submit" class="btn btn-success" value="Modifier" name="editSubmitStudent">
+        <input type="submit" class="btn btn-success" value="Modifier" name="editSubmitCompany">
       </div>
     </form>
   </div>
 </div>
 
-<div class="modal fade" id="deleteStudent" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteCompany" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form class="modal-content" method="post">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Supprimer un étudiant</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Supprimer une entreprise</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <input type="hidden" name="deleteId" id="deleteId" value="id">
-      <div class="modal-body" id="deleteStudentText">
+      <div class="modal-body" id="deleteCompanyText">
         ...
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-        <input type="submit" class="btn btn-danger" value="Supprimer" name="deleteSubmitStudent">
+        <input type="submit" class="btn btn-danger" value="Supprimer" name="deleteSubmitCompany">
       </div>
     </form>
   </div>
 </div>
 
-<div class="modal fade show" id="showStudent" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade show" id="showCompany" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl">
     <form class="modal-content" method="post">
       <div class="modal-header">
@@ -454,39 +415,37 @@ function editStudent(student) {
         </div>
         <nav id="navbar-example2" class="navbar navbar-light bg-white px-3">
             <?php 
-            $students = $classroomController->getAllStudents();
+            $companies = $companyController->getAllCompanies();
             $perPage = 15; 
             $page = isset($_GET['page']) ? $_GET['page'] : 1; 
-            $totalStudents = count($students);
-            $totalPages = ceil($totalStudents / $perPage);
+            $totalCompanies = count($companies);
+            $totalPages = ceil($totalCompanies / $perPage);
             $offset = ($page - 1) * $perPage;
   
             $count = ($page - 1) * $perPage + 1; // Calcul du compteur en fonction de la page
   
             // Obtenez un sous-ensemble d'étudiants pour cette page
-            $studentsPerPage = array_slice($students, $offset, $perPage);
+            $companiesPerPage = array_slice($companies, $offset, $perPage);
             $result = '';
   
-            foreach ($studentsPerPage as $student) {
+            foreach ($companiesPerPage as $company) {
               $result = $result . '
                 <tr id="'.$count.'">
                     <th scope="row">'.$count.'</th>
-                    <td>'.$student["Nom_Etudiant"].'</td>
-                    <td>'.$student["Prenom_Etudiant"].'</td>
-                    <td>'.$student["Adresse_Etudiant"].'</td>
-                    <td>'.$student["Telephone_Etudiant"].'</td>
-                    <td>'.$student["Email_Etudiant"].'</td>
-                    <td>'.$classroomController->getClassNameByID($student["Classe_Etudiant"])["Nom_Classe"].'</td>
+                    <td>'.$company["Nom_Entreprise"].'</td>
+                    <td>'.$company["Ville"].'</td>
+                    <td>'.$company["Arrondissement"].'</td>
+                    <td>'.$company["Secteur_Activite"].'</td>
                     <td>
                       <ul class="list-inline m-0">
                         <li class="list-inline-item">
-                          <button type="button" class="btn btn-primary btn-sm rounded-0" data-toggle="tooltip" data-bs-toggle="modal" data-placement="top" data-original-title="Montrer" data-bs-target="#showStudent" onclick=\'showStudent('.json_encode($student).')\'><i class="fa fa-table"></i></button>
+                          <button type="button" class="btn btn-primary btn-sm rounded-0" data-toggle="tooltip" data-bs-toggle="modal" data-placement="top" data-original-title="Montrer" data-bs-target="#showCompany" onclick=\'showCompany('.json_encode($company).')\'><i class="fa fa-table"></i></button>
                         </li>
                         <li class="list-inline-item">
-                          <button type="button" class="btn btn-success btn-sm rounded-0" data-toggle="tooltip" data-bs-toggle="modal" data-placement="top" data-original-title="Modifier" data-bs-target="#editStudent" onclick=\'editStudent('.json_encode($student).')\'><i class="fa fa-edit"></i></button>
+                          <button type="button" class="btn btn-success btn-sm rounded-0" data-toggle="tooltip" data-bs-toggle="modal" data-placement="top" data-original-title="Modifier" data-bs-target="#editCompany" onclick=\'editCompany('.json_encode($company).')\'><i class="fa fa-edit"></i></button>
                         </li>
                         <li class="list-inline-item">
-                          <button type="button" class="btn btn-danger btn-sm rounded-0" data-toggle="tooltip" data-bs-toggle="modal" data-placement="top" data-original-title="Supprimer" data-bs-target="#deleteStudent" onclick=\'deleteStudent('.json_encode($student).')\'><i class="fa fa-trash"></i></button>
+                          <button type="button" class="btn btn-danger btn-sm rounded-0" data-toggle="tooltip" data-bs-toggle="modal" data-placement="top" data-original-title="Supprimer" data-bs-target="#deleteCompany" onclick=\'deleteCompany('.json_encode($company).')\'><i class="fa fa-trash"></i></button>
                         </li>
                       </ul>
                     </td>
@@ -505,7 +464,7 @@ function editStudent(student) {
                 }
             }
             echo '</ul>';?>
-            <button type="button" class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#newStudent">
+            <button type="button" class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#newCompany">
                 Ajouter
               </button>
           </nav>
@@ -515,11 +474,9 @@ function editStudent(student) {
             <tr>
               <th scope="col">#</th>
               <th scope="col">Nom</th>
-              <th scope="col">Prénom</th>
-              <th scope="col">Adresse</th>
-              <th scope="col">Téléphone</th>
-              <th scope="col">Email</th>
-              <th scope="col">Classe</th>
+              <th scope="col">Ville</th>
+              <th scope="col">Arrondissement</th>
+              <th scope="col">Secteur d'activité</th>
               <th scope="col">Options</th>
             </tr>
           </thead>
