@@ -20,6 +20,8 @@ class CompanyModel {
         ':city' => $city, 
         ':arrondissement' => $arrondissement, 
         ':sector' => $sector];
+        print_r($query);
+        print_r($params);
         return $this->db->executePreparedStatement($query, $params);
     }
 
