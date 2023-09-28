@@ -25,6 +25,8 @@ class ClassroomController
     }
 
     public function editStudent($id, $lastname, $firstname, $address, $phone, $email, $classe) {
+        // global $classroomModel;
+        // $this->$classroomModel->getIDByClassName($classe);    
         return $this->classroomModel->editStudent($id, $lastname, $firstname, $address, $phone, $email, $classe);
     }
 
