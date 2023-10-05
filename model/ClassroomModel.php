@@ -52,16 +52,29 @@ class ClassroomModel {
         ':phone' => $phone, 
         ':email' => $email, 
         ':classe' => $finalClasse];
-        print_r($query);
-        print_r($params);
         return $this->db->executePreparedStatement($query, $params);
     }
 
     public function deleteStudent($id) {
         $query = "DELETE FROM etudiant WHERE ID_Etudiant = :id";
         $params = [':id' => $id];
-
         return $this->db->executePreparedStatement($query, $params);
+    }
+
+    // TEACHERS
+
+    public function getAllTeachers() {
+        $query = "SELECT * FROM professeur";
+
+        return $this->db->executeQuery($query)->fetchAll(PDO::FETCH_ASSOC);;
+    }
+
+    // Home page
+
+    public function getHomeStats() {
+        $query = "SELECT * FROM professeur";
+
+        return $this->db->executeQuery($query)->fetchAll(PDO::FETCH_ASSOC);;
     }
 }
 ?>
