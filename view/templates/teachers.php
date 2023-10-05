@@ -7,7 +7,6 @@ if (!isset($_SESSION["user_id"])) {
 }
 $authController = new AuthController();
 $classroomController = new ClassroomController();
-$companyController = new CompanyController();
 
 if (isset($_POST["logout"])) {
   $authController->logout();
@@ -51,19 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     }
   }
-  else if (isset($_POST["submitCompany"])) {
-    if (isset($_POST["name"]) && isset($_POST["city"]) && isset($_POST["arrondissement"]) && isset($_POST["sector"])) {
-      $companyController->createNewCompany(htmlspecialchars($_POST["name"]), htmlspecialchars($_POST["city"]), htmlspecialchars($_POST["arrondissement"]), htmlspecialchars($_POST["sector"]));
-    }
-  }
-  else if (isset($_POST["editSubmitCompany"])) {
+  else if (isset($_POST["editSubmitTeacher"])) {
     if (isset($_POST["editId"]) && isset($_POST["editName"]) && isset($_POST["editCity"]) && isset($_POST["editArrondissement"]) && isset($_POST["editSector"])) {
-      $companyController->editCompany(htmlspecialchars($_POST["editId"]), htmlspecialchars($_POST["editName"]), htmlspecialchars($_POST["editCity"]), htmlspecialchars($_POST["editArrondissement"]), htmlspecialchars($_POST["editSector"]));
+      $classroomController->editTeacher(htmlspecialchars($_POST["editId"]), htmlspecialchars($_POST["editName"]), htmlspecialchars($_POST["editCity"]), htmlspecialchars($_POST["editArrondissement"]), htmlspecialchars($_POST["editSector"]));
     }
   }
   else if (isset($_POST["deleteSubmitCompany"])) {
     if (isset($_POST["deleteId"])) {
-      $companyController->deleteCompany(htmlspecialchars($_POST["deleteId"]));
+      $classroomController->deleteCompany(htmlspecialchars($_POST["deleteId"]));
     }
   }
 }
@@ -164,43 +158,6 @@ function editCompany(company) {
     <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
   </symbol>
 </svg>
-
-<div class="modal fade" id="newCompany" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form class="modal-content" method="post">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Ajout d'une entreprise</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="Name">Nom</label>
-            <input type="text" class="form-control" id="name" name="name" required="true">
-          </div>
-          <div class="col-md-6 mb-3">
-            <label for="City">Ville</label>
-            <input type="text" class="form-control" id="city" name="city" required="true">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="Arr">Arrondissement</label>
-            <input type="text" class="form-control" id="arrondissement" name="arrondissement" required="true">
-          </div>
-          <div class="col-md-6 mb-3">
-            <label for="Sector">Secteur d'activité</label>
-            <input type="text" class="form-control" id="sector" name="sector" required="true">
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-        <input type="submit" class="btn btn-success" value="Confirmer" name="submitCompany">
-      </div>
-    </form>
-  </div>
-</div>
 
 <div class="modal fade" id="editCompany" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -316,13 +273,13 @@ function editCompany(company) {
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="teachers.php">
+              <a class="nav-link d-flex align-items-center gap-2 active" href="teachers.php">
                 <svg class="bi"><use xlink:href="#people"></use></svg>
                 Professeurs
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2 active" href="company.php">
+              <a class="nav-link d-flex align-items-center gap-2" href="company.php">
                 <svg class="bi"><use xlink:href="#graph-up"></use></svg>
                 Entreprises
               </a>
@@ -335,7 +292,7 @@ function editCompany(company) {
             </li>
             
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
+              <a class="nav-link d-flex align-items-center gap-2" href="internship.php">
                 <svg class="bi"><use xlink:href="#puzzle"></use></svg>
                 Stages
               </a>
@@ -416,38 +373,43 @@ function editCompany(company) {
         </div>
         <nav id="navbar-example2" class="navbar navbar-light bg-white px-3">
             <?php 
-            $companies = $companyController->getAllCompanies();
+            $teachers = $classroomController->getAllTeachers();
             $perPage = 15; 
             $page = isset($_GET['page']) ? $_GET['page'] : 1; 
-            $totalCompanies = count($companies);
-            $totalPages = ceil($totalCompanies / $perPage);
+            $totalTeachers = count($teachers);
+            $totalPages = ceil($totalTeachers / $perPage);
             $offset = ($page - 1) * $perPage;
   
             $count = ($page - 1) * $perPage + 1; // Calcul du compteur en fonction de la page
   
             // Obtenez un sous-ensemble d'étudiants pour cette page
-            $companiesPerPage = array_slice($companies, $offset, $perPage);
+            $teachersPerPage = array_slice($teachers, $offset, $perPage);
             $result = '';
   
-            foreach ($companiesPerPage as $company) {
+            foreach ($teachersPerPage as $teacher) {
               $result = $result . '
                 <tr id="'.$count.'">
                     <th scope="row">'.$count.'</th>
-                    <td>'.$company["Nom_Entreprise"].'</td>
-                    <td>'.$company["Ville"].'</td>
-                    <td>'.$company["Arrondissement"].'</td>
-                    <td>'.$company["Secteur_Activite"].'</td>
+                    <td>'.$teacher["Nom_Professeur"].'</td>
+                    <td>'.$teacher["Prenom_Professeur"].'</td>
+                    <td>'.$teacher["Adresse_Email"].'</td>
+                    <td>'.$teacher["Permission"].'</td>
                     <td>
                       <ul class="list-inline m-0">
                         <li class="list-inline-item">
-                          <button type="button" class="btn btn-primary btn-sm rounded-0" data-toggle="tooltip" data-bs-toggle="modal" data-placement="top" data-original-title="Montrer" data-bs-target="#showCompany" onclick=\'showCompany('.json_encode($company).')\'><i class="fa fa-table"></i></button>
+                          <button type="button" class="btn btn-primary btn-sm rounded-0" data-toggle="tooltip" data-bs-toggle="modal" data-placement="top" data-original-title="Montrer" data-bs-target="#showCompany" onclick=\'showCompany('.json_encode($teacher).')\'><i class="fa fa-table"></i></button>
+                        </li>';
+                        if ($_SESSION["user_permission"] == 2) {
+                          $result .= '
+                        
+                        <li class="list-inline-item">
+                          <button type="button" class="btn btn-success btn-sm rounded-0" data-toggle="tooltip" data-bs-toggle="modal" data-placement="top" data-original-title="Modifier" data-bs-target="#editCompany" onclick=\'editCompany('.json_encode($teacher).')\'><i class="fa fa-edit"></i></button>
                         </li>
                         <li class="list-inline-item">
-                          <button type="button" class="btn btn-success btn-sm rounded-0" data-toggle="tooltip" data-bs-toggle="modal" data-placement="top" data-original-title="Modifier" data-bs-target="#editCompany" onclick=\'editCompany('.json_encode($company).')\'><i class="fa fa-edit"></i></button>
-                        </li>
-                        <li class="list-inline-item">
-                          <button type="button" class="btn btn-danger btn-sm rounded-0" data-toggle="tooltip" data-bs-toggle="modal" data-placement="top" data-original-title="Supprimer" data-bs-target="#deleteCompany" onclick=\'deleteCompany('.json_encode($company).')\'><i class="fa fa-trash"></i></button>
-                        </li>
+                          <button type="button" class="btn btn-danger btn-sm rounded-0" data-toggle="tooltip" data-bs-toggle="modal" data-placement="top" data-original-title="Supprimer" data-bs-target="#deleteCompany" onclick=\'deleteCompany('.json_encode($teacher).')\'><i class="fa fa-trash"></i></button>
+                        </li>';
+                        }
+                        $result .= '
                       </ul>
                     </td>
                 </tr>
@@ -465,9 +427,6 @@ function editCompany(company) {
                 }
             }
             echo '</ul>';?>
-            <button type="button" class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#newCompany">
-                Ajouter
-              </button>
           </nav>
         <div class="bd-example">
         <table class="table table-striped">
@@ -475,9 +434,9 @@ function editCompany(company) {
             <tr>
               <th scope="col">#</th>
               <th scope="col">Nom</th>
-              <th scope="col">Ville</th>
-              <th scope="col">Arrondissement</th>
-              <th scope="col">Secteur d'activité</th>
+              <th scope="col">Prénom</th>
+              <th scope="col">Adresse email</th>
+              <th scope="col">Permission</th>
               <th scope="col">Options</th>
             </tr>
           </thead>
