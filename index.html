@@ -3,97 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
+    <title>Autocomplétion dans une zone de texte</title>
 </head>
 <body>
-    <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Modal 1</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              Show a second modal and hide this one with the button below.
-            </div>
-            <div class="modal-footer">
-              <button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">Open second modal</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Modal 2</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              Hide this modal and show the first with the button below.
-            </div>
-            <div class="modal-footer">
-              <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Back to first</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Open first modal</button>
+
+    <label for="choix">Choix :</label>
+    <input type="text" id="choix" name="choix" list="options">
+    
+    <datalist id="options">
+        <option value="Thomas">
+        <option value="Theresa">
+        <option value="Thor">
+    </datalist>
+
+
 </body>
 </html>
-
-
-
--- Création des classes
-INSERT INTO `classe` (`Nom_Classe`, `Nombre_Etudiants`) VALUES
-('1TSIO_SLAM', 20),
-('1TSIO_SISR', 22),
-('2TSSL', 14),
-('2TSSI', 15);
-
--- Insérer des données dans la table `etudiant`
-INSERT INTO `etudiant` (`Nom_Etudiant`, `Prenom_Etudiant`, `Adresse_Etudiant`, `Telephone_Etudiant`, `Email_Etudiant`, `Classe_Etudiant`) VALUES
-('Dupont', 'Marie', '25 rue de la Liberté', '06 77 88 99 00', 'marie.dupont@email.com', 1),
-('Martin', 'Paul', '18 avenue des Roses', '06 55 44 33 22', 'paul.martin@email.com', 1),
-('Dubois', 'Sophie', '30 rue de Paris', '06 99 88 77 66', 'sophie.dubois@email.com', 2),
-('Lefebvre', 'Antoine', '8 rue de la Paix', '06 33 22 11 00', 'antoine.lefebvre@email.com', 3),
-('Girard', 'Elise', '42 avenue de la République', '06 88 77 66 55', 'elise.girard@email.com', 3),
-('Petit', 'Thomas', '12 rue du Commerce', '06 44 33 22 11', 'thomas.petit@email.com', 4),
-('Roux', 'Sophie', '15 avenue des Fleurs', '06 99 88 77 66', 'sophie.roux@email.com', 4),
-('Lefevre', 'Luc', '5 rue Saint-Michel', '06 22 11 00 99', 'luc.lefevre@email.com', 1),
-('Durand', 'Marie', '2 avenue Victor Hugo', '06 11 22 33 44', 'marie.durand@email.com', 2),
-('Moreau', 'Jean', '7 rue de la Paix', '06 33 44 55 66', 'jean.moreau@email.com', 3),
-('Lecomte', 'Alice', '11 rue de la République', '06 44 55 66 77', 'alice.lecomte@email.com', 4),
-('Moreau', 'Laura', '14 rue de la Paix', '06 33 44 55 66', 'laura.moreau@email.com', 1),
-('Lecomte', 'Julien', '20 avenue Victor Hugo', '06 11 22 33 44', 'julien.lecomte@email.com', 2),
-('Bertrand', 'Emma', '6 rue Saint-Michel', '06 22 11 00 99', 'emma.bertrand@email.com', 3),
-('Leroy', 'Nicolas', '9 avenue des Fleurs', '06 66 77 88 99', 'nicolas.leroy@email.com', 4),
-('Garcia', 'Camille', '22 rue de la République', '06 88 99 00 11', 'camille.garcia@email.com', 1),
-('Lefebvre', 'Lucie', '37 avenue de la Liberté', '06 77 88 99 11', 'lucie.lefebvre@email.com', 2),
-('Roussel', 'Tom', '45 rue du Commerce', '06 44 55 66 77', 'tom.roussel@email.com', 3),
-('Meyer', 'Julia', '8 avenue des Roses', '06 99 88 77 66', 'julia.meyer@email.com', 4),
-('Sanchez', 'Hugo', '3 rue de Paris', '06 55 44 33 22', 'hugo.sanchez@email.com', 1),
-('Lemoine', 'Manon', '11 rue Victor Hugo', '06 77 88 99 22', 'manon.lemoine@email.com', 2);
-
--- Insérer des données dans la table `entreprise`
-INSERT INTO `entreprise` (`Nom_Entreprise`, `Ville`, `Arrondissement`, `Secteur_Activite`) VALUES
-('Tech Solutions', 'Marseille', '13', 'Informatique'),
-('Eco Solutions', 'Marseille', '14', 'Environnement'),
-('MediCorp', 'Marseille', '15', 'Santé'),
-('EduTech', 'Marseille', '16', 'Éducation');
-
-INSERT INTO `stage` (`Sujet_Stage`, `Outils`, `Type_Stage`, `Technologie`, `Date_Debut`, `Date_Fin`, `Professeur_ID`, `Etudiant_ID`, `Entreprise_ID`, `Date_Attestation`, `Niveau_Etude`, `Distanciel`) VALUES
-('Développement Web avancé', 'HTML, CSS, JavaScript', 'Stage technique', 'Web', '2023-10-01', '2023-11-30', 1, 1, 1, '2023-12-15', 'Bac+2', 0),
-('Analyse de données en Python', 'Python, Pandas, NumPy', 'Stage technique', 'Data Science', '2023-09-15', '2023-11-15', 2, 2, 2, '2023-12-01', 'Bac+1', 0),
-('Gestion de réseaux', 'Cisco, Networking', 'Stage technique', 'Réseaux', '2023-11-01', '2024-01-15', 1, 3, 3, '2024-02-01', 'Bac+2', 0),
-('Développement d'applications mobiles', 'Android, iOS', 'Stage technique', 'Mobile', '2023-09-01', '2023-11-15', 1, 5, 1, '2023-12-01', 'Bac+2', 0),
-('Sécurité informatique', 'Cybersécurité', 'Stage technique', 'Sécurité', '2023-10-15', '2023-12-30', 1, 7, 2, '2024-01-15', 'Bac+2', 1),
-('Data Analytics avancé', 'Big Data, Machine Learning', 'Stage technique', 'Data Science', '2023-09-15', '2023-11-30', 2, 8, 4, '2023-12-15', 'Bac+1', 0),
-('Développement Full Stack', 'Node.js, React, MongoDB', 'Stage technique', 'Web', '2023-10-01', '2023-12-30', 1, 9, 1, '2024-01-15', 'Bac+2', 0),
-('Administration de bases de données', 'SQL, MySQL', 'Stage technique', 'Base de données', '2023-09-01', '2023-11-30', 2, 10, 4, '2023-12-15', 'Bac+1', 0);
-
--- Mise à jour du nombre d'étudiants dans les classes
-UPDATE `classe` SET `Nombre_Etudiants` = (SELECT COUNT(*) FROM `etudiant` WHERE `Classe_Etudiant` = `classe`.`ID_Classe`);
