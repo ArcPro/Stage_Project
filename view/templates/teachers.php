@@ -55,9 +55,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $classroomController->editTeacher(htmlspecialchars($_POST["editId"]), htmlspecialchars($_POST["editName"]), htmlspecialchars($_POST["editCity"]), htmlspecialchars($_POST["editArrondissement"]), htmlspecialchars($_POST["editSector"]));
     }
   }
-  else if (isset($_POST["deleteSubmitCompany"])) {
+  else if (isset($_POST["deleteSubmitTeacher"])) {
     if (isset($_POST["deleteId"])) {
-      $classroomController->deleteCompany(htmlspecialchars($_POST["deleteId"]));
+      $classroomController->deleteTeacher(htmlspecialchars($_POST["deleteId"]));
     }
   }
 }
@@ -369,7 +369,7 @@ function editCompany(company) {
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Accueil</h1>
+        <h1 class="h2">Professeurs</h1>
         </div>
         <nav id="navbar-example2" class="navbar navbar-light bg-white px-3">
             <?php 
