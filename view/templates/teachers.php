@@ -55,9 +55,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $classroomController->editTeacher(htmlspecialchars($_POST["editId"]), htmlspecialchars($_POST["editName"]), htmlspecialchars($_POST["editCity"]), htmlspecialchars($_POST["editArrondissement"]), htmlspecialchars($_POST["editSector"]));
     }
   }
-  else if (isset($_POST["deleteSubmitCompany"])) {
+  else if (isset($_POST["deleteSubmitTeacher"])) {
     if (isset($_POST["deleteId"])) {
-      $classroomController->deleteCompany(htmlspecialchars($_POST["deleteId"]));
+      $classroomController->deleteTeacher(htmlspecialchars($_POST["deleteId"]));
     }
   }
 }
