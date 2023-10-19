@@ -274,25 +274,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p class="lead mb-4">Notre application de gestion de stages BTS SIO est conçue pour simplifier le suivi des stages des étudiants en BTS Services Informatiques aux Organisations (SIO). Que vous soyez un enseignant, un étudiant ou une entreprise d'accueil, notre application offre des fonctionnalités puissantes pour gérer facilement les stages et les conventions de stage.</p>
             </div>
         </div>
+<?php
+$classroomModel = new ClassroomController();
+$stat= $classroomModel->getHomeStats();
 
+?>
         <div class="container mt-5">
             <div class="row">
                 <div class="col-md-3">
                     <div class="text-center">
                         <h5>Professeurs</h5>
-                        <div class="display-1">4</div>
+                        <div class="display-1"> 
+                        <?php
+                        print_r($stat[0]["nbr_prof"]);
+                        ?>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="text-center">
                         <h5>Étudiants</h5>
-                        <div class="display-1">25</div>
+                        <div class="display-1">
+                        <?php
+                        print_r($stat[0]["nbr_etudiant"]);
+                        ?>
+                      </div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="text-center">
                         <h5>Stages</h5>
-                        <div class="display-1">24</div>
+                        <div class="display-1"> 
+                        <?php
+                        print_r($stat[0]["nbr_stage"]);
+                        ?>
+                      </div>
                     </div>
                 </div>
                 <div class="col-md-3">

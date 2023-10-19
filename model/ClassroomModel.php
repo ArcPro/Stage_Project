@@ -66,15 +66,28 @@ class ClassroomModel {
     public function getAllTeachers() {
         $query = "SELECT * FROM professeur";
 
-        return $this->db->executeQuery($query)->fetchAll(PDO::FETCH_ASSOC);;
+        return $this->db->executeQuery($query)->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Home page
 
-    public function getHomeStats() {
-        $query = "SELECT * FROM professeur";
+    public function getHomeStats()
+    {
+        $query = "SELECT
+        (SELECT COUNT(*) FROM professeur) AS nbr_prof,
+        (SELECT COUNT(*) FROM etudiant) AS nbr_etudiant,
+        (SELECT COUNT(*) FROM stage) AS nbr_stage;";
+    
 
-        return $this->db->executeQuery($query)->fetchAll(PDO::FETCH_ASSOC);;
+        return $this->db->executeQuery($query)->fetchAll(PDO::FETCH_ASSOC);
+
     }
+
+   
+
+
+
+
+
 }
 ?>
