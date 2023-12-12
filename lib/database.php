@@ -29,6 +29,8 @@ class Database {
     public function executePreparedStatement($query, $params) {
         $stmt = $this->conn->prepare($query);
         $stmt->execute($params);
+        // print_r($query);
+        // print_r($params);
         return $stmt;
     }
 

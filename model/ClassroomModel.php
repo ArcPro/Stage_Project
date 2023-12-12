@@ -36,8 +36,9 @@ class ClassroomModel {
     }
 
     public function createNewStudent($lastname, $firstname, $address, $phone, $email, $classe) {
+        $finalClasse = $this->getIDByClassName($classe)["ID_Classe"];  
         $query = "INSERT INTO etudiant(Nom_Etudiant, Prenom_Etudiant, Adresse_Etudiant, Telephone_Etudiant, Email_Etudiant, Classe_Etudiant) VALUES(:lastname, :firstname, :address, :phone, :email, :classe)";
-        $params = [':lastname' => $lastname, ':firstname' => $firstname, ':address' => $address, ':phone' => $phone, ':email' => $email, ':classe' => $classe];
+        $params = [':lastname' => $lastname, ':firstname' => $firstname, ':address' => $address, ':phone' => $phone, ':email' => $email, ':classe' => $finalClasse];
 
         return $this->db->executePreparedStatement($query, $params);
     }
