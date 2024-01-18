@@ -16,14 +16,15 @@ $entreprises = [];
 foreach ($names as $name) {
     $categorie = $name['Categorie'];
     $nom = $name['Nom'];
+    $prenom = $name['Prenom'];
     if ($categorie == "Entreprise") {
       array_push($entreprises, $nom);
     }
     else if ($categorie == "Etudiant") {
-      array_push($students, $nom);
+      array_push($students, $nom . ' ' . $prenom);
     }
     else if ($categorie == "Professeur") {
-      array_push($teachers, $nom);
+      array_push($teachers, $nom . ' ' . $prenom);
     }
 }
 
@@ -199,9 +200,9 @@ function editStudent(student) {
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="firstName">Nom de l'étudiant</label>
-            <input type="text" class="form-control" id="createStudent" name="createStudent" list="options" required="true">
+            <input type="text" class="form-control" id="createStudent" name="createStudent" list="soptions" required="true">
     
-            <datalist id="options">
+            <datalist id="soptions">
               <?php
                 foreach($students as $student) {
                   echo '<option value="'.$student.'">';
@@ -213,9 +214,9 @@ function editStudent(student) {
           ?>
           <div class="col-md-6 mb-3">
             <label for="lastName">Nom du professeur</label>
-            <input type="text" class="form-control" id="createTeacher" name="createTeacher" list="options" required="true">
+            <input type="text" class="form-control" id="createTeacher" name="createTeacher" list="toptions" required="true">
     
-            <datalist id="options">
+            <datalist id="toptions">
               <?php
                 foreach($teachers as $teacher) {
                   echo '<option value="'.$teacher.'">';

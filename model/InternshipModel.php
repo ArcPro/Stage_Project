@@ -14,11 +14,11 @@ class InternshipModel {
     }
 
     public function getAllNameInformations() {
-        $query = "SELECT 'Entreprise' AS Categorie, Nom_Entreprise AS Nom FROM entreprise
+        $query = "SELECT 'Entreprise' AS Categorie, Nom_Entreprise AS Nom, Ville AS Prenom  FROM entreprise
             UNION
-            SELECT 'Etudiant' AS Categorie, Nom_Etudiant AS Nom FROM etudiant
+            SELECT 'Etudiant' AS Categorie, Nom_Etudiant AS Nom, Prenom_Etudiant AS Prenom FROM etudiant
             UNION
-            SELECT 'Professeur' AS Categorie, Nom_Professeur AS Nom FROM professeur";
+            SELECT 'Professeur' AS Categorie, Nom_Professeur AS Nom, Prenom_Professeur AS Prenom FROM professeur";
     
         return $this->db->executeQuery($query)->fetchAll(PDO::FETCH_ASSOC);
     }
